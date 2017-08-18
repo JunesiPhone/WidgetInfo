@@ -418,6 +418,13 @@ static void getMusic(){
 		   				[[objc_getClass("UIApplication") sharedApplication] launchApplicationWithIdentifier:array[1] suspended:NO];
 		   			}
 
+                    /* AppDrawer */
+                    if([array[0] isEqualToString:@"appdrawer"]){
+                        if([[objc_getClass("SBUIController") sharedInstanceIfExists] respondsToSelector:@selector(openAppDrawer)]){
+                            [[objc_getClass("SBUIController") sharedInstanceIfExists] openAppDrawer];
+                        }
+                    }
+
 		   			if([array[0] isEqualToString:@"weather"]){
 		   				//getWeather();
 		   				refreshWeather(); //bypass the time interval

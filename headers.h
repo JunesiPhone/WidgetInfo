@@ -39,6 +39,7 @@
 +(SBUIController *)sharedInstanceIfExists;
 -(BOOL)isOnAC;
 -(int)batteryCapacityAsPercentage;
+-(void)openAppDrawer;
 @end
 
 /*Music*/

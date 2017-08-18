@@ -27,6 +27,7 @@
 	<div id="weatherDiv">Weather</div>
 	<div id="weatherRefresh">Refresh Weather</div>
 	<div id="mail">Open Mail</div>
+	<div id="appdrawer">Open AppDrawer</div>
 	<div id="Battery">90%</div>
 	<div id="Charging">DunnoYet</div>
 	<div id="ramFree">RAM</div>
@@ -136,6 +137,9 @@
 
 		/* actions that control iOS */
 		//could also use 'music:playpause'
+		document.getElementById('appdrawer').addEventListener('touchstart', function(){
+			window.sendCommands = 'appdrawer:open';
+		});
 		document.getElementById('play').addEventListener('touchstart', function(){
 			window.sendCommands = 'music:play';
 		});
