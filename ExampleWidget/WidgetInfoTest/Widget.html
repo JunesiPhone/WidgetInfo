@@ -1,0 +1,160 @@
+<!--
+	This is an example widget for the tweak WidgetInfo that is on my repo http://junesiphone.com/supersecret
+	Meant to work with iWidgets, nothing else is needed. Works on iOS8 to iOS10
+	It's intent is not to be cool or cute. It's just to show other widget devs how to use info from WidgetInfo
+	If you have any questions please contact me @JunesiPhone or street.visions@yahoo.com
+	You are free to use this code as is, if you make anything with it please let me know!!
+-->
+<!DOCTYPE html>
+<html>
+<head>
+	<meta content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+	<style>
+		body{
+			color:white; font-size: 20px;
+			background-color: black;
+		}
+		#artwork{
+			width:100px;
+			height: 100px;
+			background-size: cover;
+			background-position: center;
+			background-color: black;
+		}
+	</style>
+</head>
+<body>
+	<div id="weatherDiv">Weather</div>
+	<div id="weatherRefresh">Refresh Weather</div>
+	<div id="mail">Open Mail</div>
+	<div id="Battery">90%</div>
+	<div id="Charging">DunnoYet</div>
+	<div id="ramFree">RAM</div>
+	<div id="play">Play</div>
+	<div id="pause">Pause</div>
+	<div id="next">Next</div>
+	<div id="prev">Prev</div>
+	<div id="artist">artist</div>
+	<div id="album">album</div>
+	<div id="title">title</div>
+	<div id="artwork"></div>
+	<div id="playing">NotPlaying<div>
+
+
+	<script type="text/javascript">
+
+		/*
+			we are changing these divs often, lets cache them in a variable to use later
+			without needing to look it up by getElementByID every time
+		*/
+
+		var doc = document,
+			battDiv = doc.getElementById('Battery'),
+			chargeDiv = doc.getElementById('Charging'),
+			artistDiv = doc.getElementById('artist'),
+			albumDiv = doc.getElementById('album'),
+			titleDiv = doc.getElementById('title'),
+			artworkDiv = doc.getElementById('artwork'),
+			playingDiv = doc.getElementById('playing'),
+			weatherDiv = doc.getElementById('weatherDiv'),
+			ramFreeDiv = doc.getElementById('ramFree');
+
+		/*
+			This function is called from the tweak WidgetInfo. It will call the function when somthing updates.
+			Which means there is no need for an interval or setTimeout to randomly check if the battery needs updated.
+			Instead it will update whenever the battery or music changes. You can see this by watching the charge div
+			as you unplug and plug in your device. It will change immediately.
+		*/
+		function mainUpdate(type){ //NEW must have type here and put if statements for battery, music, and weather.
+
+			if(type == "battery"){ //battery info
+				/*
+					Variables Injected:
+					batteryPercent
+					batteryCharging
+					ramFree
+					ramUsed
+					ramAvailable
+					ramPhysical
+				*/
+				battDiv.innerHTML = batteryPercent + "%";
+				chargeDiv.innerHTML = (batteryCharging) ? "Charging" : "Not Charging";
+				ramFreeDiv.innerHTML = ramFree + " MB";
+
+			}
+			if(type == "music"){ //music info
+				/*
+					Variables Injected:
+					artist
+					album
+					title
+					artwork
+					isplaying
+				*/
+				if(isplaying){
+					artistDiv.innerHTML = artist;
+					albumDiv.innerHTML = album;
+					titleDiv.innerHTML = title;
+					//gets current artwork - this needs to have a random number at the end just so cache doesn't take over.
+					artworkDiv.style.backgroundImage = "url('file:///var/mobile/Documents/Artwork.jpg?" + (new Date()).getTime() + "')";
+					playingDiv.innerHTML = "isPlaying";
+				}else{
+					artistDiv.innerHTML = "No Artist";
+					albumDiv.innerHTML = "No Album";
+					titleDiv.innerHTML = "No Title";
+					artworkDiv.style.backgroundImage = "url('ArtworkDefault.jpg')";
+					playingDiv.innerHTML = "Not Playing";
+				}
+
+			}
+			if (type == "weather"){ //weather info
+				/*
+					weather is now an object that holds these items
+					city
+					high
+					low
+					condition
+					naturalCondition
+					windSpeed
+					temperature
+					sunsetTime
+					conditionCode
+					humidity
+					dewPoint
+					windDirection
+					windChill
+					updateTimeString
+					chanceofrain
+					dayForecasts <- (This is another object which contains 11 days
+					each day has low, high, dayNumber, dayOfWeek, and icon
+					example dayForecasts[0].low or dayForecasts[1].icon)
+				*/
+				weatherDiv.innerHTML = weather.updateTimeString + " City: " + weather.city + " LOW: " + weather.low + " HIGH: " + weather.high + " rain " + weather.chanceofrain + "%";
+			}
+
+		}
+
+		/* actions that control iOS */
+		//could also use 'music:playpause'
+		document.getElementById('play').addEventListener('touchstart', function(){
+			window.sendCommands = 'music:play';
+		});
+		document.getElementById('pause').addEventListener('touchend', function(){
+			window.sendCommands = 'music:pause';
+		});
+		document.getElementById('next').addEventListener('touchend', function(){
+			window.sendCommands = 'music:next';
+		});
+		document.getElementById('prev').addEventListener('touchend', function(){
+			window.sendCommands = 'music:prev';
+		});
+		document.getElementById('mail').addEventListener('touchend', function(){
+			window.sendCommands = 'app:com.apple.mobilemail';
+		});
+		document.getElementById('weatherRefresh').addEventListener('touchend', function(){
+			window.sendCommands = 'weather:update';
+		});
+
+	</script>
+</body>
+</html>
