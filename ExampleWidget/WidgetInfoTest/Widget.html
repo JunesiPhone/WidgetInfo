@@ -139,19 +139,19 @@
 		document.getElementById('play').addEventListener('touchstart', function(){
 			window.sendCommands = 'music:play';
 		});
-		document.getElementById('pause').addEventListener('touchend', function(){
+		document.getElementById('pause').addEventListener('touchstart', function(){
 			window.sendCommands = 'music:pause';
 		});
-		document.getElementById('next').addEventListener('touchend', function(){
+		document.getElementById('next').addEventListener('touchstart', function(){
 			window.sendCommands = 'music:next';
 		});
-		document.getElementById('prev').addEventListener('touchend', function(){
+		document.getElementById('prev').addEventListener('touchstart', function(){
 			window.sendCommands = 'music:prev';
 		});
-		document.getElementById('mail').addEventListener('touchend', function(){
+		document.getElementById('mail').addEventListener('touchstart', function(){
 			window.sendCommands = 'app:com.apple.mobilemail';
 		});
-		document.getElementById('weatherRefresh').addEventListener('touchend', function(){
+		document.getElementById('weatherRefresh').addEventListener('touchstart', function(){
 			window.sendCommands = 'weather:update';
 		});
 

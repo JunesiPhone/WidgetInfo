@@ -381,10 +381,10 @@ static void getMusic(){
 -(id)hitTest:(CGPoint)arg1 withEvent:(id)arg2{
 	UIView* sel = (UIView *)%orig;
 	if([sel isKindOfClass:[UIWebBrowserView class]]){
+        IWWidget* widget = (IWWidget*)sel.superview;
+        UIWebView *webView = MSHookIvar<UIWebView*>(widget, "_webView");
 		dispatch_time_t delay = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 0.1);
 	 	dispatch_after(delay, dispatch_get_main_queue(), ^(void){
-			IWWidget* widget = (IWWidget*)sel.superview;
-			UIWebView *webView = MSHookIvar<UIWebView*>(widget, "_webView");
 	   		NSString* string = [webView stringByEvaluatingJavaScriptFromString:@"window.sendCommands"];
 	   		NSArray *array = [string componentsSeparatedByString:@":"];
 	   		if([array count] > 1){
@@ -422,10 +422,10 @@ static void getMusic(){
 		   				//getWeather();
 		   				refreshWeather(); //bypass the time interval
 		   			}
-                    [webView stringByEvaluatingJavaScriptFromString:@"window.sendCommands = '';"];
 		   		}
 	   		}
 	 	});
+        [webView stringByEvaluatingJavaScriptFromString:@"window.sendCommands = '';"];
 	}
 	return %orig;
 }
