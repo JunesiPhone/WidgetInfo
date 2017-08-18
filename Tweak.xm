@@ -422,6 +422,7 @@ static void getMusic(){
 		   				//getWeather();
 		   				refreshWeather(); //bypass the time interval
 		   			}
+                    [webView stringByEvaluatingJavaScriptFromString:@"window.sendCommands = '';"];
 		   		}
 	   		}
 	 	});
