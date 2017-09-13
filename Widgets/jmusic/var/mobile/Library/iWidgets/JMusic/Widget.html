@@ -1,0 +1,132 @@
+<html>
+<head>
+	<title>Music Player</title>
+	<!-- MusicPlayer requires WidgetInfo to work -->
+<style>
+*{
+	padding: 0;
+	margin: 0;
+	font-family: helvetica;
+}
+.container{
+	width: 320px;
+	height: 90px;
+}
+.base{
+	position: absolute;
+	top:2px;
+	left:2px;
+	width: 315px;
+	height: 80px;
+	border-radius: 8px;
+	background-color: #fafafa;
+	box-shadow: 0 3px 2px rgba(0,0,0,0.2);
+}
+.base div{
+	position: absolute;
+}
+#title{
+	white-space: nowrap;
+	color:#353535;
+	top:13px;
+	left:80px;
+	width: 230px;
+	overflow: scroll;
+}
+#artist{
+	top:33px;
+	left:80px;
+	font-size: 12px;
+	font-weight: 100;
+	color:#adadad;
+	width: 230px;
+	overflow: scroll;
+}
+#controls{
+	margin-left: -10px;
+	margin-top: 22px;
+}
+#play{
+	position: absolute;
+	top:15px;
+	left:250px;
+}
+#next{
+	position: absolute;
+	top:20px;
+	left:285px;
+}
+#prev{
+	position: absolute;
+	top:20px;
+	left:225px;
+}
+#art{
+	top:10px;
+	left:10px;
+	width: 60px;
+	height: 60px;
+	border-radius: 4px;
+	background-size: cover;
+	background-image: url('img/blank.png');
+}
+</style>
+</head>
+<body>
+<div class="container">
+	<div class="base">
+		<div id="art"></div>
+		<div id="title">Scared To Be Lonely (OutaMatic Remix)</div>
+		<div id="artist">No Artist</div>
+		<div id="controls">
+			<img id="play" src="img/play.svg"/>
+			<img id="next" src="img/next.svg" width="25"/>
+			<img id="prev" src="img/prev.svg" width="25"/>
+		</div>
+	</div>
+</div>
+
+<script>
+var doc = document,
+	media = {
+		play: function(){
+			window.sendCommands = 'music:playpause';
+		},
+		next: function(){
+			window.sendCommands = 'music:next';
+		},
+		prev: function(){
+			window.sendCommands = 'music:prev';
+		}
+	},
+	artDiv = doc.getElementById('art'),
+	titleDiv = doc.getElementById('title'),
+	artistDiv = doc.getElementById('artist'),
+	playDiv = doc.getElementById('play');
+
+function mainUpdate(type){
+	if(type == 'music'){
+		if(isplaying){
+			playDiv.src = 'img/pause.svg';
+			artistDiv.innerHTML = artist;
+			titleDiv.innerHTML = title;
+			artDiv.style.backgroundImage = "url('file:///var/mobile/Documents/Artwork.jpg?" + (new Date()).getTime() + "')";
+		}else{
+			playDiv.src = 'img/play.svg';
+			artistDiv.innerHTML = "No Artist";
+			titleDiv.innerHTML = "No Title";
+			artDiv.style.backgroundImage = "url('ArtworkDefault.jpg')";
+		}
+	}
+}
+
+doc.getElementById('controls').addEventListener('touchstart', function(el){
+	media[el.target.id]();
+});
+
+artDiv.addEventListener('touchstart', function(){
+	window.sendCommands = 'app:' + musicApp;
+});
+</script>
+</body>
+</html>
