@@ -171,6 +171,9 @@ static void refreshWeather(){
 	        }
 		}
 	}else{
+        if(!currentCity){
+            currentCity = [[objc_getClass("WeatherPreferences") sharedPreferences]loadSavedCities][0];
+        }
 		WeatherLocationManager* WLM = [objc_getClass("WeatherLocationManager")sharedWeatherLocationManager];
         TWCLocationUpdater *TWCLU = [objc_getClass("TWCLocationUpdater") sharedLocationUpdater];
 
@@ -470,6 +473,7 @@ static void getMusic(){
 		isOnSB = true;
 		getBattery();
 		getMusic();
+        refreshWeather();
 		%orig;
 	}
 %end
