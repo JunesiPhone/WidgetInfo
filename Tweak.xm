@@ -279,9 +279,7 @@ static void getBattery(){
     int ramPhysical = ramDataForType(-1);
     NSString* battery = [NSString stringWithFormat:@"var batteryPercent = %d, batteryCharging = %d, ramFree = %d, ramUsed = %d, ramAvailable = %d, ramPhysical = %d;", batteryPercent, batteryCharging, ramFree, ramUsed, ramAvailable, ramPhysical];
     update(battery, @"battery");
-    if(isOnSB){
-    	getWeather();
-    }
+    getWeather();
     battery = nil;
 }
 
@@ -473,7 +471,7 @@ static void getMusic(){
 		isOnSB = true;
 		getBattery();
 		getMusic();
-        refreshWeather();
+        //refreshWeather();
 		%orig;
 	}
 %end
