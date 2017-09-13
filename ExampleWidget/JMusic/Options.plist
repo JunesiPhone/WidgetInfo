@@ -19,6 +19,8 @@
 			<string>com.soundcloud.TouchApp</string>
 			<key>Music.app</key>
 			<string>com.apple.Music</string>
+			<key>Amazon</key>
+			<string>com.amazon.mp3.AmazonCloudPlayer</string>
 		</dict>
 		<key>type</key>
 		<string>select</string>
