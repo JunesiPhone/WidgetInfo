@@ -1,5 +1,6 @@
 #import <objc/runtime.h>
 #import <CoreLocation/CoreLocation.h>
+#import <EventKit/EventKit.h>
 #include <mach/mach.h>
 #import <mach/mach_host.h>
 #include <sys/sysctl.h>
@@ -15,7 +16,9 @@ static bool firstLoad = false;
 static int lastCalledTouch = 1;
 static int lastWeatherUpdate = 1;
 
-
+// @interface EKReminder (more)
+// - (id)dueDate;
+// @end
 /*
 	All updates go through here. Easy to stop from always updating.
 */
@@ -265,6 +268,105 @@ static int ramDataForType(int type){
 }
 //end
 
+static void getEvents(){
+    EKEventStore *store = nil;
+
+    if(!store){
+        store = [[EKEventStore alloc] init];
+    }
+
+     NSDate *start = [NSDate date];
+     NSDate *end = [NSDate dateWithTimeInterval:25920000 sinceDate:start];
+
+
+     NSPredicate* predicate = [store predicateForEventsWithStartDate:start endDate:end calendars:nil];
+     NSArray *events = [store eventsMatchingPredicate:predicate];
+
+     NSMutableDictionary *dateDict;
+     NSMutableArray *dateDictArray = [[NSMutableArray alloc] init];
+     NSString *dupeCatch = @"";
+
+    for (EKEvent *object in events) {
+        NSString* info = [NSString stringWithFormat:@"%@", object.title];
+        NSCharacterSet *cs = [NSCharacterSet characterSetWithCharactersInString:@"!~`@#$%^&*-+();:=_{}[],.<>?\\/|\"\'"];
+
+        NSString *filtered = [[info componentsSeparatedByCharactersInSet:cs] componentsJoinedByString:@""];
+        NSMutableString *finalString = [NSMutableString stringWithString:filtered];
+        [finalString replaceOccurrencesOfString:@"gmail" withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [finalString length])];
+        [finalString replaceOccurrencesOfString:@"coms" withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [finalString length])];
+        [finalString replaceOccurrencesOfString:@"yahoo" withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [finalString length])];
+        [finalString replaceOccurrencesOfString:@"couk" withString:@"" options:NSCaseInsensitiveSearch range:NSMakeRange(0, [finalString length])];
+        filtered = [NSString stringWithString:finalString];
+
+        if (!([dupeCatch rangeOfString:filtered].location == NSNotFound)) {
+            dateDict = [[NSMutableDictionary alloc]init];
+            NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+            [dateFormat setDateFormat:@"MM-dd-YYYY"];
+            NSString* date = [dateFormat stringFromDate:object.startDate];
+
+            date = [date stringByReplacingOccurrencesOfString:@"\\" withString:@"\\\\"];
+            date = [date stringByReplacingOccurrencesOfString:@"\"" withString:@"\\\""];
+            date = [date stringByReplacingOccurrencesOfString:@"\'" withString:@"\\\'"];
+            date = [date stringByReplacingOccurrencesOfString:@"\n" withString:@"\\n"];
+            date = [date stringByReplacingOccurrencesOfString:@"\r" withString:@"\\r"];
+            date = [date stringByReplacingOccurrencesOfString:@"\f" withString:@"\\f"];
+
+            [dateDict setValue:date forKey:@"date"];
+
+            [dateDict setValue:filtered forKey:@"title"];
+            [dateDictArray addObject:dateDict];
+        }
+        dupeCatch = [NSString stringWithFormat:@"%@", filtered];
+    }
+    NSData * dictData = [NSJSONSerialization dataWithJSONObject:dateDictArray options:0 error:nil];
+    NSString * jsonObj = [[NSString alloc] initWithData:dictData encoding:NSUTF8StringEncoding];
+    NSString* eventStr = [NSString stringWithFormat:@"var events = %@;", jsonObj];
+    update(eventStr, @"events");
+
+    dateDict = nil;
+    dateDictArray = nil;
+    dictData = nil;
+    jsonObj = nil;
+    eventStr = nil;
+
+
+    //Reminders
+    // [store requestAccessToEntityType:EKEntityTypeReminder completion:^(BOOL granted, NSError *error) {
+    //     NSLog(@"CalTest acces to §Reminder granded %i ",granted);
+    // }];
+
+    NSPredicate *predicate2 = [store predicateForRemindersInCalendars:nil];
+    [store fetchRemindersMatchingPredicate:predicate2 completion:^(NSArray *reminders) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            NSMutableArray *eventsDictArray = [[NSMutableArray alloc] init];
+            NSMutableDictionary *eventsDict;
+            for (EKReminder *object in reminders) {
+                //NSLog(@"CalTest eventes %@", object);
+                //NSLog(@"CalTest evernt %@", object.dueDate);
+                if(!object.completionDate){
+                    eventsDict = [[NSMutableDictionary alloc]init];
+                    [eventsDict setValue:object.title forKey:@"title"];
+                    //[eventsDict setValue:object.dueDate forKey:@"date"];
+                    [eventsDictArray addObject:eventsDict];
+                }
+            }
+
+            NSData * eventData = [NSJSONSerialization dataWithJSONObject:eventsDictArray options:0 error:nil];
+            NSString * eventObj = [[NSString alloc] initWithData:eventData encoding:NSUTF8StringEncoding];
+            NSString* remindersStr = [NSString stringWithFormat:@"var reminders = %@;", eventObj];
+            update(remindersStr, @"reminders");
+            eventsDict = nil;
+            eventsDictArray = nil;
+            eventData = nil;
+            eventObj = nil;
+            remindersStr = nil;
+
+            });
+    }];
+
+    store = nil;
+}
+
 /*
 	I need a timer to call the weather, so why not use something that gets called frequently.
 	Added ram, helps with debugging as well
@@ -315,7 +417,6 @@ static void getMusic(){
     	music = nil;
 	});
 }
-
 
 %hook MPUNowPlayingController
 - (id)init {
@@ -453,6 +554,7 @@ static void getMusic(){
 	 dispatch_after(delay, dispatch_get_main_queue(), ^(void){
 	   getBattery();
 	   getMusic();
+       getEvents();
 	   if(isOnSB){
 	   	refreshWeather();
 	   }
@@ -471,6 +573,10 @@ static void getMusic(){
 		isOnSB = true;
 		getBattery();
 		getMusic();
+        dispatch_time_t delay = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 0.2);
+        dispatch_after(delay, dispatch_get_main_queue(), ^(void){
+            getEvents(); //todo find something that hooks events so I can display when the event is changed instead of lock/unlock
+        });
         //refreshWeather();
 		%orig;
 	}
