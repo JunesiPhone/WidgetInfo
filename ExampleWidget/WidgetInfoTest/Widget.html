@@ -24,6 +24,8 @@
 	</style>
 </head>
 <body>
+	<div id="remindersDiv">Reminders</div>
+	<div id="eventsDiv">Events</div>
 	<div id="weatherDiv">Weather</div>
 	<div id="weatherRefresh">Refresh Weather</div>
 	<div id="mail">Open Mail</div>
@@ -67,6 +69,20 @@
 			as you unplug and plug in your device. It will change immediately.
 		*/
 		function mainUpdate(type){ //NEW must have type here and put if statements for battery, music, and weather.
+
+			if(type == "reminders"){
+				if(reminders.length > 0){
+					document.getElementById('remindersDiv').innerHTML = '';
+					for (var i = 0; i < reminders.length; i++) {
+						document.getElementById('remindersDiv').innerHTML += reminders[i].title + "</br>";
+					}
+				}
+			}
+			if(type == "events"){
+				if(events.length > 0){
+					document.getElementById('eventsDiv').innerHTML = events[0].title + " " + events[0].date;
+				}
+			}
 
 			if(type == "battery"){ //battery info
 				/*
