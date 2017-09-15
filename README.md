@@ -1,7 +1,7 @@
 WidgetInfo
 ----
 
-Hooks into iWidgets to provide battery, ram, music, and weather directly from iOS. It does this by injecting global variables which are defined in the ExampleWidget. When said info is updated it will call a main function mainUpdate(type) the parameter passed describes what info was changed and therefore a developer can update those dom elements without the need for timers.
+Hooks into iWidgets to provide battery, ram, music, calendar events, reminders from reminders app, and weather directly from iOS. It does this by injecting global variables which are defined in the ExampleWidget. When said info is updated it will call a main function mainUpdate(type) the parameter passed describes what info was changed and therefore a developer can update those dom elements without the need for timers. Widgets must use the methods shown in the ExampleWidget to receive this info. This will not automatically fix old widgets.
 
 iOS Calls
 ----
