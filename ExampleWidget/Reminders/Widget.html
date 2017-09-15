@@ -1,0 +1,47 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<style type="text/css">
+	body{
+		margin:0;
+		padding:0;
+		font-family: "futura";
+	}
+	.holder{
+		width: 200px;
+		height: 65px;
+		font-style: italic;
+		overflow:  scroll;
+		-webkit-overflow-scrolling:touch;
+		white-space:  nowrap;
+	}
+	.holder div{
+		color:white;
+
+	}
+	@font-face {
+	  font-family: "futura";
+	  src: url("futura.otf");
+	}
+	</style>
+</head>
+<body>
+	<div id="holder" class="holder">
+		<div class="reminder">&bull; Install WidgetInfo</div>
+	</div>
+	<script type="text/javascript">
+	function mainUpdate(type){
+		if(type == "reminders"){
+			if(reminders.length > 0){
+				document.getElementById('holder').innerHTML = '';
+				for (var i = 0; i < reminders.length; i++) {
+					var div = document.createElement('div');
+						div.innerHTML = "&bull; " + reminders[i].title;
+						document.getElementById('holder').appendChild(div);
+				}
+			}
+		}
+	}
+	</script>
+</body>
+</html>
