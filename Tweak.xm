@@ -385,6 +385,22 @@ static void getBattery(){
     battery = nil;
 }
 
+static void getStatusbar(){
+    SBWiFiManager *WM = [objc_getClass("SBWiFiManager") sharedInstance];
+    SBTelephonyManager *TM = [objc_getClass("SBTelephonyManager") sharedTelephonyManager];
+
+    NSNumber *signalStrength = [NSNumber numberWithInt:[WM signalStrengthRSSI]];
+    NSNumber *signalBars = [NSNumber numberWithInt:[WM signalStrengthBars]];
+    NSString *signalName = [WM currentNetworkName];
+
+    NSNumber *wifiStrength = [NSNumber numberWithInt:[TM signalStrength]];
+    NSNumber *wifiBars = [NSNumber numberWithInt:[TM signalStrengthBars]];
+    NSString *wifiName = [WM currentNetworkName];
+
+    NSString* statusbar = [NSString stringWithFormat:@"var signalStrength = '%@', signalBars = '%@', signalName = '%@', wifiStrength = '%@', wifiBars = '%@', wifiName = '%@';", signalStrength, signalBars, signalName, wifiStrength, wifiBars, wifiName];
+    update(statusbar, @"statusbar");
+}
+
 /*
 	 delay again. Seems to be my new best friend
 	 I use the delay as sometime the artwork takes a second to load
@@ -438,6 +454,13 @@ static void getMusic(){
 		return [nowPlayingController currentNowPlayingArtwork];
 	}
 	return [globalMPUNowPlaying currentNowPlayingArtwork];
+}
+%end
+
+%hook SBStatusBarStateAggregator
+- (void)_notifyItemChanged:(int)arg1{
+    %orig;
+    getStatusbar();
 }
 %end
 
@@ -555,6 +578,7 @@ static void getMusic(){
 	   getBattery();
 	   getMusic();
        getEvents();
+       getStatusbar();
 	   if(isOnSB){
 	   	refreshWeather();
 	   }

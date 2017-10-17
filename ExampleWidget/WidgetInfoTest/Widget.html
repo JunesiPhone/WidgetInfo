@@ -24,6 +24,7 @@
 	</style>
 </head>
 <body>
+	<div id="statusbarDiv">Statusbar</div>
 	<div id="remindersDiv">Reminders</div>
 	<div id="eventsDiv">Events</div>
 	<div id="weatherDiv">Weather</div>
@@ -60,6 +61,7 @@
 			artworkDiv = doc.getElementById('artwork'),
 			playingDiv = doc.getElementById('playing'),
 			weatherDiv = doc.getElementById('weatherDiv'),
+			statusbarDiv = doc.getElementById('statusbarDiv'),
 			ramFreeDiv = doc.getElementById('ramFree');
 
 		/*
@@ -70,6 +72,9 @@
 		*/
 		function mainUpdate(type){ //NEW must have type here and put if statements for battery, music, and weather.
 
+			if(type == "statusbar"){
+				statusbarDiv.innerHTML = signalName;
+			}
 			if(type == "reminders"){
 				if(reminders.length > 0){
 					document.getElementById('remindersDiv').innerHTML = '';

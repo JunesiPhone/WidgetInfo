@@ -21,6 +21,30 @@
 - (void)webView:(WebView *)webview didClearWindowObject:(WebScriptObject *)window forFrame:(WebFrame *)frame;
 @end
 
+/*Signal*/
+@interface SBTelephonyManager : NSObject
++ (id)sharedTelephonyManager;
+- (int)signalStrengthBars;
+- (int)signalStrength;
+- (id)operatorName;
+@end
+
+/* Wifi*/
+@interface SBWiFiManager : NSObject
++(id)sharedInstance;
+- (int)signalStrengthRSSI;
+- (int)signalStrengthBars;
+- (id)currentNetworkName;
+- (void)setWiFiEnabled:(BOOL)arg1;
+@end
+
+/*BlueTooth*/
+@interface BluetoothManager : NSObject
++ (id)sharedInstance;
+- (BOOL)setEnabled:(BOOL)arg1;
+- (BOOL)enabled;
+@end
+
 /* App stuff and SBMedia uses*/
 @interface SBApplication
 - (id)applicationWithBundleIdentifier:(id)arg1;
