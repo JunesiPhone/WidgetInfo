@@ -601,3 +601,60 @@ static void getMusic(){
 		%orig;
 	}
 %end
+
+
+/* Widget Previews: Tap hold iwidget in list to show preview.jpg */
+static UITableView* currentTableView;
+static UIView* preview;
+
+static void showPreview(NSString *name){
+    CGRect screenFrame = [[UIScreen mainScreen] bounds];
+    NSString* path = [NSString stringWithFormat:@"var/mobile/Library/iWidgets/%@/preview.jpg",name];
+    UIImageView *imageview = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, screenFrame.size.width, screenFrame.size.height)];
+
+    preview=[[UIView alloc]initWithFrame:CGRectMake(0, 0, screenFrame.size.width, screenFrame.size.height)];
+
+    [imageview setImage:[UIImage imageWithContentsOfFile:path]];
+    [imageview setContentMode:UIViewContentModeScaleAspectFit];
+    [preview addSubview: imageview];
+
+    UIView* topView = [UIApplication sharedApplication].keyWindow;
+
+    preview.transform = CGAffineTransformScale(CGAffineTransformIdentity, 0.001, 0.001);
+
+    [topView addSubview:preview];
+
+    [UIView animateWithDuration:0.1 animations:^{
+        preview.transform = CGAffineTransformScale(CGAffineTransformIdentity, 1.0, 1.0);
+    } completion:^(BOOL finished) {
+        preview.transform = CGAffineTransformIdentity;
+    }];
+}
+
+%hook IWWidgetsPopup
+    -(long long)tableView:(id)arg1 numberOfRowsInSection:(long long)arg2{
+        UILongPressGestureRecognizer *lp = [[UILongPressGestureRecognizer alloc]
+                      initWithTarget:self action:@selector(tapGesture:)];
+                    lp.minimumPressDuration = 0.3; //seconds
+                    [arg1 addGestureRecognizer:lp];
+        currentTableView = arg1;
+        return %orig;
+    }
+
+    %new
+    -(void)tapGesture:(UITapGestureRecognizer *)sender{
+        CGPoint p = [sender locationInView:currentTableView];
+        NSIndexPath *indexPath = [currentTableView indexPathForRowAtPoint:p];
+        UITableViewCell *cell = [currentTableView cellForRowAtIndexPath:indexPath];
+        if (sender.state == UIGestureRecognizerStateEnded) {
+          [preview removeFromSuperview];
+         }else if (sender.state == UIGestureRecognizerStateBegan){
+           showPreview(cell.textLabel.text);
+         }
+    }
+%end
+
+
+
+
+
