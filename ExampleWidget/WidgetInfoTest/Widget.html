@@ -73,7 +73,17 @@
 		function mainUpdate(type){ //NEW must have type here and put if statements for battery, music, and weather.
 
 			if(type == "statusbar"){
-				statusbarDiv.innerHTML = signalName;
+				/*
+					Variables injected:
+					signalStrength
+					signalBars
+					signalName
+					wifiStrength
+					wifiBars
+					wifiName
+
+				*/
+				statusbarDiv.innerHTML = signalBars;
 			}
 			if(type == "reminders"){
 				if(reminders.length > 0){

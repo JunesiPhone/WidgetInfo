@@ -388,6 +388,7 @@ static void getBattery(){
 static void getStatusbar(){
     SBWiFiManager *WM = [objc_getClass("SBWiFiManager") sharedInstance];
     SBTelephonyManager *TM = [objc_getClass("SBTelephonyManager") sharedTelephonyManager];
+    BluetoothManager *BM = [objc_getClass("BluetoothManager") sharedInstance];
 
     NSNumber *signalStrength = [NSNumber numberWithInt:[WM signalStrengthRSSI]];
     NSNumber *signalBars = [NSNumber numberWithInt:[WM signalStrengthBars]];
@@ -397,7 +398,9 @@ static void getStatusbar(){
     NSNumber *wifiBars = [NSNumber numberWithInt:[TM signalStrengthBars]];
     NSString *wifiName = [WM currentNetworkName];
 
-    NSString* statusbar = [NSString stringWithFormat:@"var signalStrength = '%@', signalBars = '%@', signalName = '%@', wifiStrength = '%@', wifiBars = '%@', wifiName = '%@';", signalStrength, signalBars, signalName, wifiStrength, wifiBars, wifiName];
+    NSNumber *blueTooth = [NSNumber numberWithBool: [BM enabled]];
+
+    NSString* statusbar = [NSString stringWithFormat:@"var signalStrength = '%@', signalBars = '%@', signalName = '%@', wifiStrength = '%@', wifiBars = '%@', wifiName = '%@', bluetoothOn = '%@';", signalStrength, signalBars, signalName, wifiStrength, wifiBars, wifiName, blueTooth];
     update(statusbar, @"statusbar");
 }
 
@@ -459,8 +462,8 @@ static void getMusic(){
 
 %hook SBStatusBarStateAggregator
 - (void)_notifyItemChanged:(int)arg1{
-    %orig;
     getStatusbar();
+    %orig;
 }
 %end
 
