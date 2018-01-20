@@ -17,6 +17,27 @@
 @interface IWWidget : UIView
 @end;
 
+
+@interface SBFolderView : UIView
+@end
+
+@interface SBFolderView (edited)
+@end
+
+@interface SBFolderController : NSObject
+@property (nonatomic,retain,readonly) SBFolderView* contentView;
+@end
+
+@interface SBIconController : UIViewController
+-(SBFolderController*)_rootFolderController;
++(instancetype)sharedInstance;
+- (id)rootIconListAtIndex:(long long)arg1;
+- (id)dockListView;
+- (id)contentView;
+- (id)model;
+@property (nonatomic, retain) UIView* contentView;
+@end
+
 @interface UIWebView (Stock)
 - (void)webView:(WebView *)webview didClearWindowObject:(WebScriptObject *)window forFrame:(WebFrame *)frame;
 @end

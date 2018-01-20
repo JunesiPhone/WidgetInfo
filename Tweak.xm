@@ -215,11 +215,14 @@ static void refreshWeather(){
 	This was the most reliable throughout the things I tired.
 */
 static void getWeather(){
+    HBLogDebug(@"Called");
 	if(lastWeatherUpdate > 0){
+        HBLogDebug(@"refreshWeather");
 		lastWeatherUpdate = 0;
 		dispatch_time_t delay = dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC * 1200.0);
 		dispatch_after(delay, dispatch_get_main_queue(), ^(void){
 			lastWeatherUpdate = 1;
+            HBLogDebug(@"TimesUp");
 		});
 		refreshWeather();
 	}
