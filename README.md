@@ -8,7 +8,7 @@ iOS Calls
 
 With communication from iOS to the iWidget, the only thing missing was calling iOS from the iWidget. This is handled by hooking iWidgets hitTest: method. Calls that are translated are defined in the ExampleWidget.
 
-A compiled version can be found on my Cydia repo <a href="http://junesiphone.com/supersecret/">here</a>.
+Latest version <a href="https://www.dropbox.com/s/nxrtu1pzcihgmvp/widgetinfo.deb?dl=0">here</a>.
 
 Credits
 ----
