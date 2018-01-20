@@ -393,12 +393,12 @@ static void getStatusbar(){
     SBTelephonyManager *TM = [objc_getClass("SBTelephonyManager") sharedTelephonyManager];
     BluetoothManager *BM = [objc_getClass("BluetoothManager") sharedInstance];
 
-    NSNumber *signalStrength = [NSNumber numberWithInt:[WM signalStrengthRSSI]];
-    NSNumber *signalBars = [NSNumber numberWithInt:[WM signalStrengthBars]];
-    NSString *signalName = [WM currentNetworkName];
+    NSNumber *signalStrength = [NSNumber numberWithInt:[TM signalStrength]];
+    NSNumber *signalBars = [NSNumber numberWithInt:[TM signalStrengthBars]];
+    NSString *signalName = [TM operatorName];
 
-    NSNumber *wifiStrength = [NSNumber numberWithInt:[TM signalStrength]];
-    NSNumber *wifiBars = [NSNumber numberWithInt:[TM signalStrengthBars]];
+    NSNumber *wifiStrength = [NSNumber numberWithInt:[WM signalStrengthRSSI]];
+    NSNumber *wifiBars = [NSNumber numberWithInt:[WM signalStrengthBars]];
     NSString *wifiName = [WM currentNetworkName];
 
     NSNumber *blueTooth = [NSNumber numberWithBool: [BM enabled]];
